@@ -1,0 +1,84 @@
+/* Body - Ensuring the whole screen takes full height */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  
+   /* Background color */
+}
+
+/* Container to center the form box */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* The form box */
+.form-box {
+  background-color: whitesmoke; /* Dark background for the form box */
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form group and labels */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: #E0E0E0;
+  margin-bottom: 8px;
+  line-height: 1.375rem;
+}
+
+.required {
+  color: #F69EC7;
+}
+
+.input-field {
+  background-color: rgb(202, 202, 202);
+  color: black;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  position: relative;
+}
+
+.input-field:focus {
+  outline: none;
+  border: 1px solid #4CAF50;
+}
+
+/* Password visibility toggle */
+input[type='password'] {
+  padding-right: 30px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 38px;
+  right: 12px;
+  cursor: pointer;
+}
+
+/* Submit button */
+.submit-button {
+  width: 100%;
+  background-color: rgb(0, 123, 255);
+  color: rgb(253, 253, 253);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: rgb(0, 21, 255);
+}

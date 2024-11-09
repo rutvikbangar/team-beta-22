@@ -69,12 +69,7 @@ const Slider = () => {
 
   return (
     <main>
-      <header>
-        <figure className="logo">
-          <img src="https://images.sftcdn.net/images/t_app-icon-m/p/d0a16856-0924-4a75-b623-865833e542db/1706903944/moodmate-share-with-friends-logo" alt="Logo" />
-        </figure>
-       
-      </header>
+      
       <section className="slider">
         <div className="list">
           {items.map((item, index) => (

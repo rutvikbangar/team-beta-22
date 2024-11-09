@@ -1,190 +1,193 @@
-import React, { useState } from 'react'
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import {toast} from "react-hot-toast"
+import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import './Signupform.css'
 
+const SignupForm = ({ setIsLoggedIn }) => {
+  const navigate = useNavigate();
 
-const SignupForm = ({setIsLoggedIn}) => {
-    const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    password: '',
+  });
 
-    const [formData, setFormData] = useState({
-        firstName:"",
-        lastName:"",
-        email:"",
-        password:"",
-        confirmPassword:""
-    })
+  const [accountType, setAccountType] = useState('student');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [accountType, setAccountType] = useState("student");
+  function changeHandler(event) {
+    setFormData((prevData) => ({
+      ...prevData,
+      [event.target.name]: event.target.value,
+    }));
+  }
 
-    function changeHandler(event) {
+  function fileChangeHandler(event) {
+    setSelectedFile(event.target.files[0]);
+  }
 
-        setFormData( (prevData) =>(
-            {
-                ...prevData,
-                [event.target.name]:event.target.value
-            }
-        ) )
+  async function submitHandler(event) {
+    event.preventDefault();
 
+    if (!selectedFile) {
+      toast.error('Please upload an image file.');
+      return;
     }
 
-    function submitHandler(event) {
-        event.preventDefault();
-        if(formData.password != formData.confirmPassword) {
-            toast.error("Passwords do not match");
-            return ;
-        }
-
-        setIsLoggedIn(true);
-        toast.success("Account Created");
-        const accountData = {
-            ...formData
-        };
-
-        const finalData = {
-            ...accountData,
-            accountType
-        }
-
-        console.log("printing Final account data ");
-        console.log(finalData);
-
-        navigate("/dashboard");
-
+    if (!formData.password) {
+      toast.error('Please enter a password.');
+      return;
     }
 
+    try {
+      const formDataWithFile = new FormData();
+      formDataWithFile.append('fullname', formData.fullName);
+      formDataWithFile.append('username', formData.username);
+      formDataWithFile.append('email', formData.email);
+      formDataWithFile.append('password', formData.password);
+      formDataWithFile.append('profilepicture', selectedFile);
+      formDataWithFile.append('accountType', accountType);
+      console.log(formDataWithFile)
+
+      const response = await fetch('http://localhost:4000/api/v1/users/register', {
+        method: 'POST',
+        body: formDataWithFile,
+      });
+
+      console.log(response.json)
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const responseData = await response.json();
+      const { accessToken } = responseData.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      setIsLoggedIn(true);
+      toast.success('Account Created');
+      navigate('/dashboard');
+    } catch (error) {
+      toast.error('Registration failed');
+    }
+  }
 
   return (
-    <div>
-        {/* student-Instructor tab */}
-        <div
-        className='flex bg-richblack-800 p-1 gap-x-1 my-6 rounded-full max-w-max'>
-
-            <button
-            className={`${accountType === "student" 
-            ?
-              "bg-richblack-900 text-richblack-5"
-            :"bg-transparent text-richblack-200"} py-2 px-5 rounded-full transition-all duration-200`}
-            onClick={()=> setAccountType("student")}>
-                Student
-            </button>
-
-            <button
-            className={`${accountType === "instructor" 
-            ?
-              "bg-richblack-900 text-richblack-5"
-            :"bg-transparent text-richblack-200"} py-2 px-5 rounded-full transition-all duration-200`}
-            onClick={() => setAccountType("instructor")}>
-                Admin
-            </button>
-        </div>
-
-        <form onSubmit={submitHandler} >
-        {/* first name and lastName */}
-            <div className='flex gap-x-4 mt-[20px]'>
-                    <label className='w-full'>
-                        <p className='text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]'>First Name<sup className='text-pink-200'>*</sup></p>
-                        <input
-                            required
-                            type="text"
-                            name="firstName"
-                            onChange={changeHandler}
-                            placeholder="Enter First Name"
-                            value={formData.firstName}
-                            className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                        />
-                    </label>
-
-                    <label className='w-full'>
-                        <p className='text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]'>Last Name<sup className='text-pink-200'>*</sup></p>
-                        <input
-                            required
-                            type="text"
-                            name="lastName"
-                            onChange={changeHandler}
-                            placeholder="Enter Last Name"
-                            value={formData.lastName}
-                            className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                        />
-                    </label>
-            </div>
-            {/* email Add */}
-            <div className='mt-[20px]'>
-            <label className='w-full mt-[20px]'>
-                    <p className='text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]'>Email Address<sup className='text-pink-200'>*</sup></p>
-                    <input
-                        required
-                        type="email"
-                        name="email"
-                        onChange={changeHandler}
-                        placeholder="Enter Email Address "
-                        value={formData.email}
-                        className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                    />
+    <div className="container">
+      <div className="form-box">
+        <form onSubmit={submitHandler} encType="multipart/form-data">
+          <div className="form-group">
+            <label htmlFor="fullName">
+              <p className="label">
+                Full Name<sup className="required">*</sup>
+              </p>
+              <input
+                required
+                type="text"
+                id="fullName"
+                name="fullName"
+                onChange={changeHandler}
+                placeholder="Enter Full Name"
+                value={formData.fullName}
+                className="input-field"
+              />
             </label>
-            </div>
-            
 
-            {/* createPassword and Confirm Password */}
-            <div className='w-full flex gap-x-4 mt-[20px]'>
-                <label className='w-full relative'>
-                    <p className='text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]'>Create Password<sup className='text-pink-200'>*</sup></p>
-                    <input
-                        required
-                        type= {showPassword ? ("text") : ("password")}
-                        name="password"
-                        onChange={changeHandler}
-                        placeholder="Enter Password"
-                        value={formData.password}
-                        className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                    />
-                    <span
-                     className='absolute right-3 top-[38px] cursor-pointer' 
-                    onClick={() => setShowPassword((prev) => !prev)}>
-                        {showPassword ? 
+            <label htmlFor="username">
+              <p className="label">
+                Username<sup className="required">*</sup>
+              </p>
+              <input
+                required
+                type="text"
+                id="username"
+                name="username"
+                onChange={changeHandler}
+                placeholder="Enter Username"
+                value={formData.username}
+                className="input-field"
+              />
+            </label>
+          </div>
 
-                        (<AiOutlineEyeInvisible fontSize={24} fill='#AFB2BF'/>) : 
+          <div className="form-group">
+            <label htmlFor="email">
+              <p className="label">
+                Email Address<sup className="required">*</sup>
+              </p>
+              <input
+                required
+                type="email"
+                id="email"
+                name="email"
+                onChange={changeHandler}
+                placeholder="Enter Email Address"
+                value={formData.email}
+                className="input-field"
+              />
+            </label>
+          </div>
 
-                        (<AiOutlineEye fontSize={24} fill='#AFB2BF'/>)}
-                    </span>
-                </label>
+          <div className="form-group">
+            <label htmlFor="password">
+              <p className="label">
+                Password<sup className="required">*</sup>
+              </p>
+              <input
+                required
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                onChange={changeHandler}
+                placeholder="Enter Password"
+                value={formData.password}
+                className="input-field"
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                ) : (
+                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                )}
+              </span>
+            </label>
+          </div>
 
-                <label className='w-full relative'>
-                    <p className='text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]'>Confirm Password<sup className='text-pink-200'>*</sup></p>
-                    <input
-                        required
-                        type= {showConfirmPassword ? ("text") : ("password")}
-                        name="confirmPassword"
-                        onChange={changeHandler}
-                        placeholder="Confirm Password"
-                        value={formData.confirmPassword}
-                        className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                    />
-                    <span 
-                     className='absolute right-3 top-[38px] cursor-pointer'
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}>
-                        {showConfirmPassword ?
+          <div className="form-group">
+            <label htmlFor="file">
+              <p className="label">
+                Upload File<sup className="required">*</sup>
+              </p>
+              <input
+                required
+                type="file"
+                id="file"
+                name="file"
+                accept="image/*"
+                onChange={fileChangeHandler}
+                className="input-field"
+              />
+            </label>
+          </div>
 
-                         (<AiOutlineEyeInvisible fontSize={24} fill='#AFB2BF'/>) : 
-
-                         (<AiOutlineEye fontSize={24} fill='#AFB2BF'/>)}
-                    </span>
-                </label>
-            </div>
-        <button className=' w-full bg-yellow-50 rounded-[8px] font-medium text-richblack-900 px-[12px] py-[8px] mt-6'>
+          <button type="submit" className="submit-button">
             Create Account
-        </button>
+          </button>
         </form>
-
-    </div>
-  )
-}
+      </div>
+      </div>
+  );
+};
 
 SignupForm.propTypes = {
-    setIsLoggedIn: PropTypes.func.isRequired,
-  };
+  setIsLoggedIn: PropTypes.func.isRequired,
+};
 
-export default SignupForm
+export default SignupForm;
