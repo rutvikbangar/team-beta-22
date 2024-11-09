@@ -106,16 +106,10 @@ const loginUser = asyncHandler(async (req,res) => {
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const options = {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'None'
-    }
 
     return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    
     .json(
         new ApiResponse(
             200, 
@@ -127,30 +121,26 @@ const loginUser = asyncHandler(async (req,res) => {
     )
 });
 
-const logoutUser = asyncHandler(async (req,res) => {
-    await User.findByIdAndUpdate(
-        req.user._id,
-        {
-            $unset: {
-                refreshToken: 1 // this removes the field from document
-            }
-        },
-        {
-            new: true
-        }
-    )
+const logoutUser = asyncHandler(async (req, res) => {
+    try {
 
-    const options = {
-        httpOnly: true,
-        secure: false
+        await User.findByIdAndUpdate(
+            req.user._id, 
+            {
+                $unset: {
+                    refreshToken: 1 
+                }
+            },
+            { new: true }
+        );
+
+        return res.status(200).json({
+            message: "User logged out successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Logout failed" });
     }
-
-    return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"))
-})
+});
 
 
 const displayUserAward = asyncHandler(async (req,res) => {
