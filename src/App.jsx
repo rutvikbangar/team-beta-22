@@ -7,6 +7,8 @@ import Signup from "./components/Signup"
 
 import { useEffect, useState } from 'react'
 import GoalsPage from "./components/goalAssign";
+import AichatBot from "./components/Aichatbot";
+
 
 
 
@@ -24,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/goals" element={<GoalsPage />} />
+        <Route path="/moodmate" element={<AichatBot/>} />
       </Routes>
     </div>
   );
