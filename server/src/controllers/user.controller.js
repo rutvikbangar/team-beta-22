@@ -4,6 +4,8 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
+import { Award } from '../models/award.model.js';
+import { Pet } from "../models/pet.model.js";
 
 const generateAccessTokenAndRefreshToken=async(userId)=>{
     try {
@@ -150,4 +152,138 @@ const logoutUser = asyncHandler(async (req,res) => {
 })
 
 
-export {registerUser,loginUser,logoutUser}
+const displayUserAward = asyncHandler(async (req,res) => {
+    const curruser = req.user._id ;
+    const user = await User.findById(curruser).populate("myaward");
+    if (!user) {
+       throw new ApiError(400,"User not found in display Award");
+    }
+
+    res.status(200).json({
+        message: 'User awards fetched successfully',
+        awards: user.myaward
+    });
+});
+
+const displaynotBuyedAward = asyncHandler(async (req, res) => {
+    const curruser = req.user._id; 
+    const user = await User.findById(curruser).populate('myaward');
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const allAwards = await Award.find();
+
+    const notBoughtAwards = allAwards.filter(award => !user.myaward.some(userAward => userAward._id.equals(award._id)));
+
+    res.status(200).json({
+        message: 'Awards not bought yet fetched successfully',
+        notBoughtAwards
+    });
+});
+
+const buyAward = asyncHandler(async (req, res) => {
+    const { awardId } = req.params;
+
+    
+    if (!mongoose.Types.ObjectId.isValid(awardId)) {
+        throw new ApiError(400, "Invalid Award Id");
+    }
+
+   
+    const award = await Award.findById(awardId);
+    if (!award) {
+        throw new ApiError(404, "Award not found");
+    }
+
+    
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    
+    const price = award.reqcoin;
+    const balance = user.coins;
+    if (price > balance) {
+        throw new ApiError(400, "Insufficient Balance");
+    }
+
+    
+    let upuser;
+    if (award.recipient === "user") {
+        upuser = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $push: { myaward: awardId },
+                $inc: { coins: -price } 
+            },
+            { new: true }
+        );
+    } else if (award.recipient === "pet") {
+        upuser = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $push: { petaward: awardId }, 
+                $inc: { coins: -price } 
+            },
+            { new: true }
+        );
+    } else {
+        throw new ApiError(400, "Invalid recipient type");
+    }
+
+    if (!upuser) {
+        throw new ApiError(400, "Failed to update user or pet awards");
+    }
+
+    return res.status(200).json({
+        coins: upuser.coins,
+        message: "Award redeemed successfully"
+    });
+});
+
+const displayPetaward = asyncHandler(async (req, res) => {
+    const curruser = req.user._id;
+
+    
+    const user = await User.findById(curruser).populate('petaward');
+    
+
+    if (!user) {
+        throw new ApiError(404, "User not found while displaying pet"); 
+    }
+
+  
+    res.status(200).json({
+        message: 'Pet awards fetched successfully',
+        awards: user.petaward
+    });
+});
+
+
+const assignPet = asyncHandler(async (req, res) => {
+    const { petId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(petId)) {
+        throw new ApiError(400, "Invalid Pet Id");
+    }
+    
+    const curruser = req.user?._id;
+    let updateuser = await User.findByIdAndUpdate(
+        curruser,
+        { $set: { pet: petId } },
+        { new: true }
+    );
+
+    if (!updateuser) {
+        throw new ApiError(400, "Failed to update the user pet");
+    }
+
+    updateuser = await updateuser.populate("pet");
+    return res.status(200).json({ message: "Pet Assigned", pet: updateuser.pet });
+});
+
+
+
+export {registerUser,loginUser,logoutUser,displayUserAward,displaynotBuyedAward,buyAward,displayPetaward,assignPet}

@@ -21,12 +21,14 @@ app.use(cookieParser())
 
 import userRouter from "./routes/user.routes.js"
 import goalRouter from "./routes/goal.routes.js"
+import awardRouter from "./routes/award.routes.js"
 
 
 
 
 app.use("/api/v1/users/goals",goalRouter)
 app.use("/api/v1/users",userRouter)
+app.use("/api/v1/admin/award",awardRouter)
 
 
 
