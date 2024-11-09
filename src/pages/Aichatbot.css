@@ -1,19 +1,34 @@
+*{
+    box-sizing: border-box;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
 body, html {
     height: 100%;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f4f8;
+    background-color: black;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f4f8; /* Ensures consistent background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .chat-container {
-    
     width: 600px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 20px;
-    background-color: #fff;
+    background-color: #fff; /* White background for the chat container */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -43,8 +58,9 @@ body, html {
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #fff; /* Ensures white background */
     font-size: 16px;
+    color: #000; /* Ensures text is black */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     word-wrap: break-word;
 }
@@ -54,6 +70,9 @@ body, html {
     max-width: 90%;
     word-wrap: break-word;
     line-height: 1.5;
+    background-color: #fff; /* Ensures individual message backgrounds are white */
+    padding: 5px 10px; /* Padding for message readability */
+    border-radius: 5px; /* Optional rounded corners for messages */
 }
 
 .chat-message p {
@@ -75,6 +94,8 @@ body, html {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    background-color: #fff; /* White background for input */
+    color: #000;
 }
 
 .chat-button {
@@ -89,4 +110,9 @@ body, html {
 
 .chat-button:hover {
     background-color: #0056b3;
+}
+
+.chat-container h1 {
+    margin-bottom: 20px;
+    color: #000;
 }

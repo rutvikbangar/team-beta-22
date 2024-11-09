@@ -65,6 +65,8 @@ const Slider = () => {
     }
     };
 
+  
+
   return (
     <main>
       <header>

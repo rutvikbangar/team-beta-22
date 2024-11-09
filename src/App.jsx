@@ -1,21 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Slider from './components/Slider'
-import AichatBot from './components/Aichatbot'
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import Navbar from "./componenets/Navbar"
+import Slider from "./pages/Slider";
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
 
-import { Route,Routes } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+ 
 
   return (
-    <>
-      
-      <Slider/>
-    </>
-  );
+    <div className="w-screen h-screen bg-richblack-900 flex flex-col">
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+
+      <Routes>
+
+        <Route path="/" element= {<Slider/>} />
+        <Route path="/login" element = {<Login  setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/signup" element={<Signup  setIsLoggedIn={setIsLoggedIn} />} />
+        
+
+      </Routes>
+
+    </div>
+    )
 }
 
-export default App
+export default App;
