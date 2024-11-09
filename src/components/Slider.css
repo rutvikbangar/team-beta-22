@@ -4,16 +4,17 @@
 body{
     margin: 0;
     font-size: 15px;
-    background-color: black;
+   
 }
 *{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     list-style: none;
+    background-color: #000;
 }
 svg{
-    color: whitesmoke;
+    color: white;
 }
 :root{
     --width-default: min(1200px, 90vw);
@@ -34,7 +35,7 @@ header{
 }
 .slider{
     /* background-color: red; */
-    color: whitesmoke;
+    color: white;
     width: 100vw;
     height: 100vh;
     position: relative;

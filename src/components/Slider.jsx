@@ -71,12 +71,7 @@ const Slider = () => {
         <figure className="logo">
           <img src="https://images.sftcdn.net/images/t_app-icon-m/p/d0a16856-0924-4a75-b623-865833e542db/1706903944/moodmate-share-with-friends-logo" alt="Logo" />
         </figure>
-        <nav >
-          <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M5 7h14M5 12h14M5 17h10" />
-          </svg>
-
-        </nav>
+       
       </header>
       <section className="slider">
         <div className="list">
