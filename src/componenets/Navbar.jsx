@@ -84,7 +84,7 @@
                             </Link>
                             <Link to="/myitems">
                                 <button className={buttonStyles}>
-                                    Dashboard
+                                    MyItems
                                 </button>
                             </Link>
                             <Link to="/goals">
