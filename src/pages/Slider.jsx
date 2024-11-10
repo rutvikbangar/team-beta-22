@@ -8,9 +8,9 @@ const Slider = () => {
   const [quote,setQuote] = useState('INSPIRATION COMES FROM WITHIN YOURSELF,WHEN YOUR POSITIVE GOOD THINGS HAPPEN')
 
   const items = [
-    { image: '/img/1.jpg', heading: 'NEVER', text: quote },
-    { image: '/img/2.jpg', heading: 'GIVE', text: quote },
-    { image: '/img/3.jpg', heading: 'UP', text: quote }
+    { image: `url(/img/1.jpg)`, heading: 'NEVER', text: quote },
+    { image: `url(/img/2.jpg)`, heading: 'GIVE', text: quote },
+    { image: `url(/img/3.jpg)`, heading: 'UP', text: quote }
   ];
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const Slider = () => {
               ref={(el) => (itemsRef.current[index] = el)}
               className={`item ${index === activeIndex ? 'active' : ''}`}
             >
-              <div className="image" style={{ '--url': `url(${item.image})` }}></div>
+              <div className="image " style={{ backgroundImage: `url(/${item.image})`, }}></div>
               <div className="content">
                 <h2>{item.heading}</h2>
                 <p>{item.text}</p>
