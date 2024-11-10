@@ -107,7 +107,7 @@ const deleteGoal = asyncHandler(async (req,res) => {
 
 const goalHistory = asyncHandler(async (req,res) => {
     const curruser = req.user?._id ;
-    const allGoals = await Goal.find({ createdBy: curruser._id });
+    const allGoals = await Goal.find({ createdBy: curruser });
     
     if(!allGoals){
         throw new ApiError(400,"all goals not fetched")

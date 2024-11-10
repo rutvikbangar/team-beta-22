@@ -198,7 +198,7 @@ const buyAward = asyncHandler(async (req, res) => {
     const price = award.reqcoin;
     const balance = user.coins;
     if (price > balance) {
-        throw new ApiError(400, "Insufficient Balance");
+        return res.status(400).json({message:"Insufficient balance"});
     }
 
     
@@ -234,6 +234,15 @@ const buyAward = asyncHandler(async (req, res) => {
         message: "Award redeemed successfully"
     });
 });
+
+const getcurrentUser  = asyncHandler(async (req,res) => {
+    const curruser = req.user?._id ;
+    const user = await User.findById(curruser);
+    if(!user){
+        throw new ApiError(404,"User not found");
+    }
+    return res.status(200).json(new ApiResponse(200,user,"User Fetched"));
+})
 
 const displayPetaward = asyncHandler(async (req, res) => {
     const curruser = req.user._id;
@@ -277,4 +286,4 @@ const assignPet = asyncHandler(async (req, res) => {
 
 
 
-export {registerUser,loginUser,logoutUser,displayUserAward,displaynotBuyedAward,buyAward,displayPetaward,assignPet}
+export {registerUser,loginUser,logoutUser,displayUserAward,displaynotBuyedAward,buyAward,displayPetaward,assignPet,getcurrentUser}

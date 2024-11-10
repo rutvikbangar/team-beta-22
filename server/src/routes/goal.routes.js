@@ -4,7 +4,7 @@ import { completeTask, createGoal, deleteGoal, getactiveGoal, goalHistory } from
 
 const router = Router();
 
-//router.use(verifyJWT);
+router.use(verifyJWT);
 
 router.route("/").post(createGoal).get(getactiveGoal);
 

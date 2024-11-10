@@ -1,8 +1,11 @@
 import {Router} from "express"
 import { upload } from "../middlewares/multer.middleware.js"
-import { displaynotBuyedAward, displayUserAward, loginUser, logoutUser, registerUser,buyAward, displayPetaward, assignPet } from "../controllers/user.controller.js"
+import { displaynotBuyedAward, displayUserAward, loginUser, logoutUser, registerUser,buyAward, displayPetaward, assignPet, getcurrentUser } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 const router=Router()
+
+
+router.route("/").get(verifyJWT,getcurrentUser);
 
 router.route("/register").post(
     upload.single("profilepicture"),registerUser
