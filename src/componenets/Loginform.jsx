@@ -32,12 +32,12 @@ const LoginForm = ({ setIsLoggedIn }) => {
         // Await the response JSON
         const data = await response.json();
 
-        // Extract the access token from the response
+   
         const { accessToken } = data.data;
 
-        // Store the access token in localStorage
+        
         localStorage.setItem('accessToken', accessToken);
-
+        console.log(data);
         // Update the login status
         setIsLoggedIn(true);
 

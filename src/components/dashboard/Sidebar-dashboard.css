@@ -1,0 +1,114 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.drawer {
+  display: flex;
+}
+
+.drawer-content {
+  flex: 1;
+  padding: 16px;
+  margin-left: 240px; /* Adjusting content to the right, leaving space for the sidebar */
+}
+
+.navbar {
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-user .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.navbar-user span {
+  font-size: 14px;
+  margin-right: 16px;
+}
+
+.sign-out-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.main-content {
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.drawer-side {
+  width: 240px;
+  background-color: white; /* Sidebar background */
+  height: 100vh;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  position: fixed; /* Keeps it always visible */
+  left: 0;
+  top: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better distinction */
+}
+
+.sidebar-items {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  text-decoration: none;
+  color: #007bff; /* Secondary color */
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.sidebar-item:hover {
+  background-color: #f1f1f1;
+}
+
+.sidebar-item-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+}
+
+.sign-out-section {
+  margin-top: auto;
+  padding: 16px;
+}
+
+.sign-out-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sign-out-btn:hover {
+  background-color: #d32f2f;
+}
