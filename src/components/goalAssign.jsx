@@ -1,24 +1,41 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const wellnessExercises = [
   {
-    title: "Breathing Exercises",
+    title: "😀 Lets take break and have a Breathing Exercises",
     videoLink: "https://www.youtube.com/embed/wPoj5log_7M",
   },
   {
-    title: "Progressive Muscle Relaxation",
+    title: "😀 Lets take break and have a Progressive Muscle Relaxation",
     videoLink: "https://www.youtube.com/embed/8T7AwQRP72w",
   },
   {
-    title: "Laughter Therapy",
+    title: "😀 Lets take break and have a Laughter Therapy",
     videoLink: "https://www.youtube.com/embed/CSCOad2sh5w",
   },
   {
-    title: "Peaceful Sound",
+    title: "😀 Lets take break and have a Peaceful Sound",
     videoLink: "https://www.youtube.com/embed/cI4ryatVkKw",
   }
 ];
+
+const originalImageUrl = "https://i.pinimg.com/originals/c8/8a/c7/c88ac78ed012b6b98b634297c58c8c8f.gif";
+const temporaryGifUrl = "https://gifdb.com/images/high/animated-cat-gif-file-2384kb-yl5va57ikcmp8wm7.gif"; 
+const secondGifUrl = "https://media.tenor.com/SwQT4BBJS0oAAAAj/peach-and-goma-peach-goma.gif";
+
+const flipAndScale = keyframes`
+  0% {
+    transform: rotateY(0) scale(1);
+  }
+  50% {
+    transform: rotateY(-180deg) scale(1.5);
+  }
+  100% {
+    transform: rotateY(-360deg) scale(1);
+  }
+`;
 
 const GoalsPage = () => {
   const [goal, setGoal] = useState(null);
@@ -29,16 +46,25 @@ const GoalsPage = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [videoTitle, setVideoTitle] = useState('');
   const [videoLink, setVideoLink] = useState('');
+  const [animateImage, setAnimateImage] = useState(false);
+  const [showTemporaryGif, setShowTemporaryGif] = useState(false);
+  const [showFinalGif, setShowFinalGif] = useState(false);
+
+  const handleCheckboxClick = () => {
+    setAnimateImage(true);
+    setShowTemporaryGif(true);
+    setTimeout(() => {
+      setShowTemporaryGif(false);
+      setAnimateImage(false);
+    }, 3000);
+  };
 
   const handleTitleChange = (e) => setNewGoalTitle(e.target.value);
   const handleTaskChange = (e) => setNewTask(e.target.value);
-  
+
   const addTask = () => {
     if (newTask) {
-      setTasks([
-        ...tasks,
-        { description: newTask, completed: false },
-      ]);
+      setTasks([...tasks, { description: newTask, completed: false }]);
       setNewTask('');
     }
   };
@@ -52,7 +78,7 @@ const GoalsPage = () => {
     try {
       const response = await fetch('http://localhost:4000/api/v1/users/goals', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
         body: JSON.stringify(goalData),
       });
 
@@ -80,19 +106,22 @@ const GoalsPage = () => {
     setCompletedTaskCount(newCompletedCount);
 
     if (newCompletedCount % 2 === 0) {
-      // Pick a random wellness exercise when a task is completed
       const randomExercise = wellnessExercises[Math.floor(Math.random() * wellnessExercises.length)];
       setVideoTitle(randomExercise.title);
       setVideoLink(randomExercise.videoLink);
       setShowVideo(true);
     }
+    if (newCompletedCount === goal.tasks.length) {
+      setShowFinalGif(true);
+      setTimeout(() => setShowFinalGif(false), 10000);
+    }
 
     try {
       const response = await fetch(
-        'http://localhost:4000/api/v1/users/goals/${goal._id}/tasks/${updatedTasks[taskIndex]._id}',
+        `http://localhost:4000/api/v1/users/goals/${goal._id}/${updatedTasks[taskIndex]._id}`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' , 'Authorization' : `Bearer ${localStorage.getItem('accessToken')}` },
           body: JSON.stringify({ completed: updatedTasks[taskIndex].completed }),
         }
       );
@@ -113,88 +142,151 @@ const GoalsPage = () => {
   const statusPercentage = goal ? Math.round((completedTaskCount / tasks.length) * 100) : 0;
 
   return (
-    <GoalsContainer>
-      <GoalForm>
-        <Input
-          type="text"
-          placeholder="Enter Goal Title"
-          value={newGoalTitle}
-          onChange={handleTitleChange}
-        />
-        <Input
-          type="text"
-          placeholder="Enter Task Description"
-          value={newTask}
-          onChange={handleTaskChange}
-        />
-        <Button onClick={addTask}>Add Task</Button>
-        <Button onClick={createGoal}>Create Goal</Button>
-      </GoalForm>
+    <GoalsAndImageContainer>
+      <DropdownContainer>
+        <Link to="/goalshistory">
+          <DropdownButton>Goal History</DropdownButton>
+        </Link>
+        <Link to="/activegoals">
+          <DropdownButton>Active Goals</DropdownButton>
+        </Link>
+      </DropdownContainer>
 
-      {goal && (
-        <GoalCard>
-          <GoalTitle>{goal.title}</GoalTitle>
-          <GoalStatus>Status: {statusPercentage}%</GoalStatus>
+      <GoalsContainer>
+        <GoalForm>
+          <Input
+            type="text"
+            placeholder="Enter Goal Title"
+            value={newGoalTitle}
+            onChange={handleTitleChange}
+          />
+          <Input
+            type="text"
+            placeholder="Enter Task Description"
+            value={newTask}
+            onChange={handleTaskChange}
+          />
+          <Button onClick={addTask}>Add Task</Button>
+          <Button onClick={createGoal}>Create Goal</Button>
+        </GoalForm>
 
-          <ProgressBarContainer>
-            <ProgressBar width={statusPercentage} />
-          </ProgressBarContainer>
+        {goal && (
+          <GoalCard>
+            <GoalTitle>{goal.title}</GoalTitle>
+            <GoalStatus>Status: {statusPercentage}%</GoalStatus>
 
-          <GoalDeadline>Deadline: {new Date(goal.deadline).toLocaleString()}</GoalDeadline>
+            <ProgressBarContainer>
+              <ProgressBar width={statusPercentage} />
+            </ProgressBarContainer>
 
-          <TaskList>
-            {goal.tasks.map((task, index) => (
-              <TaskCard key={task._id} $completed={task.completed}>
-                <TaskCardContent>
-                  <TaskDescription>{task.description}</TaskDescription>
-                  <TaskInfo>
-                    <TaskCoin>{task.taskCoin} coins</TaskCoin>
-                    <CompletionCheckbox>
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTaskCompletion(index)}
-                        disabled={task.completed}
-                      />
-                    </CompletionCheckbox>
-                  </TaskInfo>
-                </TaskCardContent>
-              </TaskCard>
-            ))}
-          </TaskList>
-        </GoalCard>
-      )}
+            <GoalDeadline>Deadline: {new Date(goal.deadline).toLocaleString()}</GoalDeadline>
 
-      {showVideo && (
-        <VideoModal>
-          <VideoContainer>
-            <VideoTitle>{videoTitle}</VideoTitle>
-            <VideoPlayer
-              width="600"
-              height="400"
-              controls
-              src={videoLink}
-            />
-            <CloseButton onClick={handleCloseVideo}>Close Video</CloseButton>
-          </VideoContainer>
-        </VideoModal>
-      )}
-    </GoalsContainer>
+            <TaskList>
+              {goal.tasks.map((task, index) => (
+                <TaskCard key={task._id} $completed={task.completed}>
+                  <TaskCardContent>
+                    <TaskDescription>{task.description}</TaskDescription>
+                    <TaskInfo>
+                      <TaskCoin>{task.taskCoin} coins</TaskCoin>
+                      <CompletionCheckbox>
+                        <input
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() => (toggleTaskCompletion(index), handleCheckboxClick())}
+                          disabled={task.completed}
+                        />
+                      </CompletionCheckbox>
+                    </TaskInfo>
+                  </TaskCardContent>
+                </TaskCard>
+              ))}
+            </TaskList>
+          </GoalCard>
+        )}
+
+        {showVideo && (
+          <VideoModal>
+            <VideoContainer>
+              <VideoTitle>{videoTitle}</VideoTitle>
+              <VideoPlayer
+                width="600"
+                height="400"
+                controls
+                src={videoLink}
+              />
+              <CloseButton onClick={handleCloseVideo}>Close Video</CloseButton>
+            </VideoContainer>
+          </VideoModal>
+        )}
+      </GoalsContainer>
+
+      <ImageBox animate={animateImage}>
+        <img src={showFinalGif ? secondGifUrl : showTemporaryGif ? temporaryGifUrl : originalImageUrl} alt="Animated Image" />
+      </ImageBox>
+    </GoalsAndImageContainer>
   );
 };
 
 export default GoalsPage;
 
 // Styled Components
+// Styled Components
+const GoalsAndImageContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 20px;
+  background-color: white;
+  width: 100%;
+`;
+
+const DropdownContainer = styled.div`
+  display: flex;
+  flex-direction:column;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 10px;
+  border-radius:10%;
+  background-color:#FCFAEE;
+  width: 20%;
+`;
+
+const DropdownButton = styled.button`
+  padding: 10px;
+  background-color:#FCFAEE;
+  color: #007bff;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+
+  &:hover {
+    background-color: #006BFF;
+    color: white;
+  }
+`;
+
+
 const GoalsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   gap: 20px;
-  background-color: 'white';
-  width: 100%;
-  max-width: 1200px;
+  background-color: white;
+  width: 70%;
+  max-width: 980px;
+`;
+
+const ImageBox = styled.div`
+  width: 300px;
+  height: 300px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const GoalForm = styled.div`
@@ -365,4 +457,3 @@ const CloseButton = styled.button`
     background-color: #c82333;
   }
 `;
-

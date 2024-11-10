@@ -40,22 +40,7 @@ const ProfilePage = () => {
       
       <div className="card">
         <div className="row no-gutters">
-          <div className="col-md-3 col-12">
-            <div className="list-group list-group-flush account-settings-links">
-              <a
-                className={`list-group-item list-group-item-action ${activeTab === 'account-general' ? 'active' : ''}`}
-                onClick={() => setActiveTab('account-general')}
-              >
-                General
-              </a>
-              <a
-                className={`list-group-item list-group-item-action ${activeTab === 'account-change-password' ? 'active' : ''}`}
-                onClick={() => setActiveTab('account-change-password')}
-              >
-                Change Password
-              </a>
-            </div>
-          </div>
+        
 
           <div className="col-md-9 col-12">
             <div className="tab-content">

@@ -41,7 +41,7 @@ export default function AichatBot() {
     };
 
     return (
-        <div className="chat-container">
+        <div className="flex justify-center chat-container">
            <h1 style={{textAlign:'center'}}>MoodMate</h1>
             <div className="chat-box">
                 {chatMessages.map((message, index) => (

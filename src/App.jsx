@@ -12,6 +12,9 @@ import Dashboard from "./components/dashboard/Dashboard";
 import ProfilePage from "./components/dashboard/Profile";
 import MyCards from "./components/Items/Myitems";
 import StoreCards from "./components/Items/Store";
+import Home from "./componenets/LandingPage";
+import GoalHistoryPage from "./components/GoalHistory";
+import { ActiveGoals } from "./components/ActiveGoals";
 
 
 
@@ -27,7 +30,7 @@ function App() {
       <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       
       <Routes>
-        <Route path="/" element={<Slider />} />
+        <Route path="/" element={<Home/>} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/goals" element={<GoalsPage />} />
@@ -36,8 +39,14 @@ function App() {
         <Route path="/profile" element={<ProfilePage/>} />
         <Route path="/myitems" element={<MyCards/>} />
         <Route path="/store" element={<StoreCards/>} />
+        <Route path="/goalshistory" element={<GoalHistoryPage/>} />
+        <Route path="/activegoals" element={<ActiveGoals/>} />
+      
       </Routes>
     </div>
+
+    // <GoalHistoryPage/>
+    // <ActiveGoals/>
   );
 }
 

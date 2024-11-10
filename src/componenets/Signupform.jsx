@@ -58,7 +58,7 @@ const SignupForm = ({ setIsLoggedIn }) => {
         body: formDataWithFile,
       });
 
-      console.log(response.json())
+      
 
       if (!response.ok) {
         throw new Error('Registration failed');
